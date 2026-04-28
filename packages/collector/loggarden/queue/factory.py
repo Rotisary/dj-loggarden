@@ -14,7 +14,8 @@ def get_queue():
     use_redis = getattr(settings, "LOGGARDEN_USE_REDIS", False)
 
     if use_redis:
-        _queue_instance = RedisQueue()
+        maxsize = getattr(settings, "LOGGARDEN_QUEUE_MAX_SIZE", None)
+        _queue_instance = RedisQueue(maxsize=maxsize)
     else:
         maxsize = getattr(settings, "LOGGARDEN_QUEUE_MAX_SIZE", 10000)
         _queue_instance = MemoryQueue(maxsize=maxsize)

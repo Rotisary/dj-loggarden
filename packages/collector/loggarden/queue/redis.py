@@ -6,10 +6,10 @@ from .base import BaseQueue
 
 
 class RedisQueue(BaseQueue):
-    def __init__(self):
+    def __init__(self, maxsize):
         self.client = get_redis_client()
         self.queue_name = "loggarden:logs"
-        self.maxsize = getattr(settings, "LOGGARDEN_QUEUE_MAX_SIZE", None)
+        self.maxsize = maxsize
 
     def enqueue(self, item):
         try:
