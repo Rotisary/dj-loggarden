@@ -1,7 +1,9 @@
 from queue import Queue, Empty
 
+from .base import BaseQueue
 
-class MemoryQueue:
+
+class MemoryQueue(BaseQueue):
     def __init__(self, maxsize=10000):
         self.queue = Queue(maxsize=maxsize)
 

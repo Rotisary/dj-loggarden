@@ -2,9 +2,10 @@ import json
 from django.conf import settings
 
 from loggarden.redis_client import get_redis_client
+from .base import BaseQueue
 
 
-class RedisQueue:
+class RedisQueue(BaseQueue):
     def __init__(self):
         self.client = get_redis_client()
         self.queue_name = "loggarden:logs"
