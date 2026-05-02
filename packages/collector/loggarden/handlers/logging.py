@@ -1,5 +1,5 @@
 import logging
-from loggarden.utils import normalize_log_record
+from loggarden.utils import LoggerNormalizer
 import logging
 
 from loggarden.queue.factory import get_queue
@@ -12,7 +12,7 @@ class LoggingHandler(logging.Handler):
 
     def emit(self, record):
         try:
-            log_data = normalize_log_record(record)
+            log_data = LoggerNormalizer.normalize_log_record(record)
             self.queue.enqueue(log_data)
         except Exception:
             self.handleError(record)
