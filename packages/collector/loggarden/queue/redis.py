@@ -26,22 +26,22 @@ class RedisQueue(BaseQueue):
         except:
             pass
 
-def dequeue_batch(self, max_items):
-    items = []
+    def dequeue_batch(self, max_items):
+        items = []
 
-    # block for first item
-    first = self.client.brpop(self.queue_name, timeout=1)
-    if not first:
-        return items
+        # block for first item
+        first = self.client.brpop(self.queue_name, timeout=1)
+        if not first:
+            return items
 
-    _, data = first
-    items.append(json.loads(data))
-
-    # drain rest without blocking
-    for _ in range(max_items - 1):
-        data = self.client.rpop(self.queue_name)
-        if not data:
-            break
+        _, data = first
         items.append(json.loads(data))
 
-    return items
+        # drain rest without blocking
+        for _ in range(max_items - 1):
+            data = self.client.rpop(self.queue_name)
+            if not data:
+                break
+            items.append(json.loads(data))
+
+        return items
