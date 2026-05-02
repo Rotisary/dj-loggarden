@@ -4,17 +4,17 @@ from django.db import transaction
 
 from .queue.factory import get_queue
 from .models import LogEntry
+from .queue.redis import DeadLetterQueue
 
 
 class LogWorker:
     def __init__(self):
         self.queue = get_queue()
-
         self.batch_size = getattr(settings, "LOGGARDEN_BATCH_SIZE", 100)
         self.flush_interval = getattr(settings, "LOGGARDEN_FLUSH_INTERVAL", 1.0)
-
         self.max_retries = getattr(settings, "LOGGARDEN_MAX_RETRIES", 3)
         self.retry_delay = getattr(settings, "LOGGARDEN_RETRY_DELAY", 1.0)
+        self.dlq = DeadLetterQueue()
 
     def run(self):
         buffer = []
@@ -61,4 +61,4 @@ class LogWorker:
             LogEntry.objects.bulk_create(objs, batch_size=self.batch_size)
 
     def _handle_failed_batch(self, batch):
-        pass
+        self.dlq.push_batch(batch)
