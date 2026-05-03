@@ -11,8 +11,8 @@ class LogEntry(models.Model):
     user_id = models.CharField(max_length=255, blank=True, null=True, db_index=True)
     request_id = models.CharField(max_length=128, blank=True, null=True, db_index=True)
 
-    path = models.TextField(blank=True)
-    method = models.CharField(max_length=16, blank=True)
+    path = models.TextField(blank=True, null=True)
+    method = models.CharField(max_length=16, blank=True, null=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
 
     module = models.CharField(max_length=255, blank=True)
@@ -20,11 +20,11 @@ class LogEntry(models.Model):
     line = models.PositiveIntegerField(blank=True, null=True)
     file = models.TextField(blank=True)
 
-    exception_type = models.CharField(max_length=255, blank=True)
-    exception_message = models.TextField(blank=True)
-    traceback = models.TextField(blank=True)
+    exception_type = models.CharField(max_length=255, blank=True, null=True)
+    exception_message = models.TextField(blank=True, null=True)
+    traceback = models.TextField(blank=True, null=True)
 
-    extra = models.JSONField(default=dict, blank=True)
+    extra = models.JSONField(default=dict, blank=True, null=True)
 
     class Meta:
         ordering = ["-timestamp", "-id"]
