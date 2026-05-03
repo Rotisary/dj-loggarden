@@ -17,12 +17,9 @@ class Command(BaseCommand):
 
         while True:
             qs = LogEntry.objects.filter(timestamp__lt=cutoff)[:batch_size]
-
             count = qs.count()
-
             if count == 0:
                 break
 
             qs.delete()
-
             self.stdout.write(f"Deleted batch of {count}")
