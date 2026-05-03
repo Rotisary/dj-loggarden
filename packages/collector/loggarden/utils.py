@@ -1,5 +1,5 @@
 import traceback
-from django.utils.timezone import datetime
+from datetime import datetime, timezone
 from .context import get_context
 
 
@@ -10,7 +10,7 @@ class LoggerNormalizer:
         context = get_context()
 
         return {
-            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
+            "timestamp": datetime.fromtimestamp(record.created, tz=timezone.utc).isoformat(),
             "level": record.levelname,
             "message": record.getMessage(),
             "logger_name": record.name,
@@ -74,7 +74,7 @@ class LoguruNormalizer:
         context = get_context()
 
         return {
-            "timestamp": record["time"].isoformat(),
+            "timestamp": datetime.fromtimestamp(record["time"], tz=timezone.utc).isoformat(),
             "level": record["level"].name,
             "message": record["message"],
             "logger_name": record["name"],
