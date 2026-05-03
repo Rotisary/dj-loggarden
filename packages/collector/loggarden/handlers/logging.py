@@ -1,8 +1,8 @@
 import logging
-from loggarden.utils import LoggerNormalizer
-import logging
 
 from loggarden.queue.factory import get_queue
+from loggarden.config.logs import internal_logger
+from loggarden.utils import LoggerNormalizer
 
 
 class LoggingHandler(logging.Handler):
@@ -16,3 +16,6 @@ class LoggingHandler(logging.Handler):
             self.queue.enqueue(log_data)
         except Exception:
             self.handleError(record)
+            internal_logger.error(
+                f"Logging handler failed to handle log: {record}", exc_info=True
+            )

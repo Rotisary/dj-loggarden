@@ -1,7 +1,8 @@
 import json
 from django.conf import settings
 
-from loggarden.redis_client import get_redis_client
+from loggarden.config.redis import get_redis_client
+from loggarden.config.logs import internal_logger
 from .base import BaseQueue
 
 
@@ -23,8 +24,10 @@ class RedisQueue(BaseQueue):
 
             pipe.execute()
 
-        except:
-            pass
+        except Exception as e:
+            internal_logger.error(
+                f"Failed to add log_data to redis queue: {item}", exc_info=True
+            )
 
     def dequeue_batch(self, max_items):
         items = []
@@ -45,8 +48,8 @@ class RedisQueue(BaseQueue):
             items.append(json.loads(data))
 
         return items
-    
 
+    
 class DeadLetterQueue:
     def __init__(self):
         self.client = get_redis_client()

@@ -1,6 +1,7 @@
 from queue import Queue, Empty
 
 from .base import BaseQueue
+from loggarden.config.logs import internal_logger
 
 
 class MemoryQueue(BaseQueue):
@@ -11,8 +12,9 @@ class MemoryQueue(BaseQueue):
         try:
             self.queue.put_nowait(item)
         except:
-            # drop log if full
-            pass
+            internal_logger.error(
+                f"Failed to add log_data to memory queue: {item}", exc_info=True
+            )
 
     def dequeue_batch(self, max_items):
         items = []
@@ -20,5 +22,8 @@ class MemoryQueue(BaseQueue):
             try:
                 items.append(self.queue.get_nowait())
             except Empty:
+                internal_logger.error(
+                    "Info: Empty queue", exc_info=True
+                )
                 break
         return items
