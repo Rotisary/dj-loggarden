@@ -11,36 +11,17 @@ class LogWorker:
     def __init__(self):
         self.queue = get_queue()
         self.batch_size = getattr(settings, "LOGGARDEN_BATCH_SIZE", 100)
-        self.flush_interval = getattr(settings, "LOGGARDEN_FLUSH_INTERVAL", 1.0)
         self.max_retries = getattr(settings, "LOGGARDEN_MAX_RETRIES", 3)
         self.retry_delay = getattr(settings, "LOGGARDEN_RETRY_DELAY", 1.0)
         self.dlq = DeadLetterQueue()
 
     def run(self):
-        buffer = []
-        last_flush = time.time()
-
-        while True:
-            try:
-                batch = self.queue.dequeue_batch(self.batch_size)
-
-                if batch:
-                    buffer.extend(batch)
-
-                now = time.time()
-
-                should_flush = (
-                    len(buffer) >= self.batch_size or
-                    (buffer and (now - last_flush) >= self.flush_interval)
-                )
-
-                if should_flush:
-                    self._process_batch(buffer)
-                    buffer.clear()
-                    last_flush = now
-
-            except Exception as e:
-                pass
+        try:
+            batch = self.queue.dequeue_batch(self.batch_size)
+            if batch:
+                self._process_batch(batch)
+        except Exception as e:
+            pass
 
     def _process_batch(self, batch):
         for attempt in range(self.max_retries):
