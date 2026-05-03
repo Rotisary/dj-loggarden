@@ -117,3 +117,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "handlers": {
+        "loggarden": {
+            "class": "loggarden.handlers.LoggingHandler",
+            "level": "DEBUG",
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+
+    "root": {
+        "handlers": ["loggarden", "console"],
+        "level": "DEBUG",
+    },
+}
+
+LOGGARDEN_AUTOSTART = False
