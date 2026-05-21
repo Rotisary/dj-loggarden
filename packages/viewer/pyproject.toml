@@ -1,0 +1,11 @@
+[project]
+name = "dj-loggarden-view"
+version = "0.1.0"
+
+dependencies =[
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "pydantic",
+    "psycopg2-binary"
+]
